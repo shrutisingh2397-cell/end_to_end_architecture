@@ -1,0 +1,542 @@
+
+<style>
+  body-ref { font-family: 'Inter', sans-serif; }
+  .wrap { padding: 1rem 0; font-size: 14px; font-family: 'Inter', sans-serif; }
+
+  /* Tab nav */
+  .tab-nav { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary); color: var(--color-text-secondary);
+    transition: all 0.15s; font-family: inherit;
+  }
+  .tab-btn:hover { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+  .tab-btn.active { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+
+  /* Tab panels */
+  .tab-panel { display: none; animation: fadeIn 0.25s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Layer cards */
+  .layer {
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 10px;
+    border: 1px solid; position: relative;
+  }
+  .layer-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .layer-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .layer-title { font-size: 14px; font-weight: 600; }
+  .layer-sub   { font-size: 11px; margin-top: 1px; }
+  .layer-body  { font-size: 12px; line-height: 1.7; }
+  .layer-body strong { font-weight: 600; }
+
+  /* Color themes */
+  .l-blue   { background: #E6F1FB; border-color: #85B7EB; }
+  .l-blue   .layer-num { background: #1a2b4a; color: white; }
+  .l-blue   .layer-title { color: #0C447C; }
+  .l-blue   .layer-sub   { color: #185FA5; }
+  .l-blue   .layer-body  { color: #0C447C; }
+
+  .l-purple { background: #EEEDFE; border-color: #AFA9EC; }
+  .l-purple .layer-num { background: #534AB7; color: white; }
+  .l-purple .layer-title { color: #3C3489; }
+  .l-purple .layer-sub   { color: #534AB7; }
+  .l-purple .layer-body  { color: #3C3489; }
+
+  .l-orange { background: #FFF0EB; border-color: #F0997B; }
+  .l-orange .layer-num { background: #f05a28; color: white; }
+  .l-orange .layer-title { color: #993C1D; }
+  .l-orange .layer-sub   { color: #D85A30; }
+  .l-orange .layer-body  { color: #993C1D; }
+
+  .l-teal   { background: #E1F5EE; border-color: #5DCAA5; }
+  .l-teal   .layer-num { background: #0F6E56; color: white; }
+  .l-teal   .layer-title { color: #085041; }
+  .l-teal   .layer-sub   { color: #0F6E56; }
+  .l-teal   .layer-body  { color: #085041; }
+
+  .l-amber  { background: #FAEEDA; border-color: #EF9F27; }
+  .l-amber  .layer-num { background: #BA7517; color: white; }
+  .l-amber  .layer-title { color: #633806; }
+  .l-amber  .layer-sub   { color: #854F0B; }
+  .l-amber  .layer-body  { color: #633806; }
+
+  .l-green  { background: #EAF3DE; border-color: #97C459; }
+  .l-green  .layer-num { background: #3B6D11; color: white; }
+  .l-green  .layer-title { color: #27500A; }
+  .l-green  .layer-sub   { color: #3B6D11; }
+  .l-green  .layer-body  { color: #27500A; }
+
+  .l-red    { background: #FCEBEB; border-color: #F09595; }
+  .l-red    .layer-num { background: #A32D2D; color: white; }
+  .l-red    .layer-title { color: #501313; }
+  .l-red    .layer-sub   { color: #791F1F; }
+  .l-red    .layer-body  { color: #501313; }
+
+  /* Arrow */
+  .arrow-down { text-align: center; font-size: 18px; color: var(--color-text-tertiary); margin: 2px 0; line-height: 1; }
+
+  /* Code snippet */
+  .code { background: rgba(26,43,74,0.07); border-radius: 6px; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 10px; margin-top: 6px; line-height: 1.7; }
+
+  /* Two col */
+  .two-col { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; margin-bottom: 10px; }
+
+  /* Tags */
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; margin: 2px 3px 2px 0; }
+  .tag-navy   { background: rgba(26,43,74,0.1);   color: #1a2b4a; }
+  .tag-orange { background: rgba(240,90,40,0.12); color: #993C1D; }
+  .tag-green  { background: rgba(16,185,129,0.12);color: #065f46; }
+  .tag-red    { background: rgba(239,68,68,0.1);  color: #7f1d1d; }
+  .tag-teal   { background: rgba(13,148,136,0.12);color: #134e4a; }
+
+  /* Scenario box */
+  .scenario { background: var(--color-background-secondary); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--color-border-tertiary); }
+  .sc-step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .sc-step:last-child { margin-bottom: 0; }
+  .sc-num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .scn-blue   { background: #1a2b4a; color: white; }
+  .scn-orange { background: #f05a28; color: white; }
+  .scn-teal   { background: #0F6E56; color: white; }
+  .scn-red    { background: #A32D2D; color: white; }
+  .sc-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.65; }
+  .sc-text strong { color: var(--color-text-primary); font-weight: 600; }
+
+  /* Highlight box */
+  .highlight { border-radius: 8px; padding: 10px 14px; margin-top: 8px; font-size: 12px; line-height: 1.65; border-left: 3px solid; border-radius: 0 8px 8px 0; }
+  .hl-orange { background: #FFF0EB; border-color: #f05a28; color: #993C1D; }
+  .hl-green  { background: #EAF3DE; border-color: #3B6D11; color: #27500A; }
+  .hl-red    { background: #FCEBEB; border-color: #A32D2D; color: #501313; }
+
+  /* Section header */
+  .sec-label { font-size: 10px; font-weight: 700; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+
+  /* Divider */
+  .div { border: none; border-top: 1px solid var(--color-border-tertiary); margin: 16px 0; }
+</style>
+
+<div class="wrap">
+
+  <!-- Tab navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('overview')">🗺 Full Overview</button>
+    <button class="tab-btn" onclick="showTab('flow')">🔄 Request Flow</button>
+    <button class="tab-btn" onclick="showTab('security')">🔐 Security Layers</button>
+    <button class="tab-btn" onclick="showTab('onboard')">🚀 Onboarding Flow</button>
+    <button class="tab-btn" onclick="showTab('pitch')">🎯 Pitch Summary</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB 1 — FULL OVERVIEW
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-overview">
+
+    <div class="sec-label">The 6 layers of the IMPOWR AI solution</div>
+
+    <div class="layer l-blue">
+      <div class="layer-header">
+        <div class="layer-num">1</div>
+        <div>
+          <div class="layer-title">Frontend — React Web App (inside IMPOWR portal)</div>
+          <div class="layer-sub">What the user sees and touches</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        A lightweight chat interface embedded directly inside the existing IMPOWR platform. The user types a plain-English question — no SQL, no technical knowledge required. The UI also includes the Onboarding tab for adding new users with role assignment and HIPAA compliance sign-off.<br><br>
+        <span class="tag tag-navy">React</span>
+        <span class="tag tag-navy">Chat UI</span>
+        <span class="tag tag-navy">Onboarding Wizard</span>
+        <span class="tag tag-navy">Role-based views</span>
+        <span class="tag tag-navy">PDF export for grant reports</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="layer l-purple">
+      <div class="layer-header">
+        <div class="layer-num">2</div>
+        <div>
+          <div class="layer-title">Azure Active Directory — Identity & Authentication</div>
+          <div class="layer-sub">Who are you, and what are you allowed to see?</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        Every user logs in through Azure AD (Microsoft's identity platform). When login succeeds, Azure AD issues a JWT token containing the user's identity: their <strong>UserID</strong>, <strong>OrgID</strong> (which nonprofit they belong to), and <strong>Role</strong> (caseworker / manager / admin). This token travels with every single request. Without it, the system refuses the connection entirely.
+        <div class="code">Token payload: { userId: "sarah.martinez", orgId: 42, role: "manager", exp: ... }</div>
+        <span class="tag tag-navy">Azure AD</span>
+        <span class="tag tag-navy">JWT tokens</span>
+        <span class="tag tag-navy">MFA enforced</span>
+        <span class="tag tag-navy">SSO</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="layer l-orange">
+      <div class="layer-header">
+        <div class="layer-num">3</div>
+        <div>
+          <div class="layer-title">API Middleware — The Brain & Security Gate</div>
+          <div class="layer-sub">Validates identity, calls the AI, enforces org scope</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        A Python/FastAPI backend hosted on Azure App Service. It does three jobs simultaneously:<br><br>
+        <strong>① Validates the token</strong> — checks the JWT is real and not expired.<br>
+        <strong>② Builds a locked system prompt</strong> — injects OrgID=42 as immutable context before calling the AI. The user can never override this.<br>
+        <strong>③ Validates the AI output</strong> — checks that the SQL generated contains OrgID=42 and is SELECT-only before executing it. Any deviation = rejected.
+        <div class="code">System prompt (locked): "Only generate SELECT queries. Every query MUST include WHERE OrgID = {user.orgId}. Never query other orgs."</div>
+        <span class="tag tag-orange">Python FastAPI</span>
+        <span class="tag tag-orange">Azure App Service</span>
+        <span class="tag tag-orange">JWT validation</span>
+        <span class="tag tag-orange">Prompt injection</span>
+        <span class="tag tag-orange">SQL validation</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="layer l-amber">
+      <div class="layer-header">
+        <div class="layer-num">4</div>
+        <div>
+          <div class="layer-title">Azure OpenAI GPT-4.1 — The NLP-to-SQL Engine</div>
+          <div class="layer-sub">Translates plain English into safe SQL queries</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        The AI receives the locked system prompt + the user's question + the IMPOWR database schema. It translates natural language into a valid SQL query. GPT-4.1 is the strongest Azure model for this task — 1M token context window means it can hold the entire schema in memory. It is HIPAA-eligible for text workloads under Microsoft's BAA. Microsoft guarantees the data is <strong>never used to train their models</strong>.
+        <div class="code">Input:  "How many clients achieved stable housing in Q1?"
+Output: SELECT COUNT(*) FROM Clients WHERE OrgID=42 AND HousingStatus='Stable' AND OutcomeDate BETWEEN '2025-01-01' AND '2025-03-31'</div>
+        <span class="tag tag-orange">Azure OpenAI GPT-4.1</span>
+        <span class="tag tag-orange">HIPAA BAA covered</span>
+        <span class="tag tag-orange">No model training on PHI</span>
+        <span class="tag tag-orange">Private endpoints</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="layer l-teal">
+      <div class="layer-header">
+        <div class="layer-num">5</div>
+        <div>
+          <div class="layer-title">Azure SQL + Row-Level Security — The Data Vault</div>
+          <div class="layer-sub">The last line of defense — enforced at the database engine itself</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        Even if every layer above somehow failed, the database enforces isolation. Azure SQL's Row-Level Security (RLS) automatically appends a WHERE clause to every query based on the session's OrgID. If OrgID=42 is the session, then only rows belonging to Org 42 are ever returned — the database engine physically cannot return Org 17's rows, regardless of what SQL was sent.
+        <div class="code">CREATE FUNCTION fn_OrgFilter(@OrgID INT) RETURNS TABLE AS
+  RETURN SELECT 1 WHERE @OrgID = CAST(SESSION_CONTEXT(N'OrgID') AS INT);
+
+CREATE SECURITY POLICY OrgPolicy
+  ADD FILTER PREDICATE fn_OrgFilter(OrgID) ON dbo.Clients;</div>
+        <span class="tag tag-teal">Azure SQL Database</span>
+        <span class="tag tag-teal">Row-Level Security (RLS)</span>
+        <span class="tag tag-teal">TDE encryption at rest</span>
+        <span class="tag tag-teal">Private endpoints (no public internet)</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="layer l-green">
+      <div class="layer-header">
+        <div class="layer-num">6</div>
+        <div>
+          <div class="layer-title">Azure Monitor + Log Analytics — The Audit Trail</div>
+          <div class="layer-sub">Every action logged for HIPAA accountability</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        Every query — who asked, what question, what SQL was generated, what data was returned, what time — is written to Azure Monitor. This is your HIPAA audit log. If a breach ever occurs, you can reconstruct exactly what happened. Security anomalies (like cross-org attempts) trigger immediate alerts.
+        <div class="code">Log entry: { user: "sarah.martinez", orgId: 42, question: "clients stable Q1", sql: "SELECT...", rows: 47, timestamp: "2025-04-15T14:23:11Z", status: "OK" }</div>
+        <span class="tag tag-green">Azure Monitor</span>
+        <span class="tag tag-green">Log Analytics Workspace</span>
+        <span class="tag tag-green">HIPAA audit trail</span>
+        <span class="tag tag-green">Anomaly alerts</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB 2 — REQUEST FLOW
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-flow">
+
+    <div class="sec-label">Happy path — a manager asks a question</div>
+    <div class="scenario">
+      <div class="sc-step">
+        <div class="sc-num scn-blue">1</div>
+        <div class="sc-text"><strong>User types</strong> — Sarah (Org 42, Manager) types "How many clients achieved stable housing in Q1?" into the chat interface on her browser.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-blue">2</div>
+        <div class="sc-text"><strong>Request sent to API</strong> — The React app sends an HTTP POST to the FastAPI backend. The JWT token from Azure AD is attached in the Authorization header automatically.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-blue">3</div>
+        <div class="sc-text"><strong>Token validated</strong> — The API reads the JWT. It extracts: <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">orgId=42, role=manager</code>. If the token is invalid or expired → 401 Unauthorized immediately.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-orange">4</div>
+        <div class="sc-text"><strong>System prompt built</strong> — The API constructs a locked prompt: the IMPOWR schema + the rule "OrgID must = 42, SELECT only" + Sarah's question. OrgID is hardcoded by the server — Sarah has no way to change it.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-orange">5</div>
+        <div class="sc-text"><strong>GPT-4.1 called</strong> — Azure OpenAI receives the prompt over a private endpoint (never public internet). It generates: <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">SELECT COUNT(*) FROM Clients WHERE OrgID=42 AND HousingStatus='Stable'...</code></div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-orange">6</div>
+        <div class="sc-text"><strong>SQL validated</strong> — The API checks: Does the SQL contain <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">OrgID=42</code>? Is it SELECT only? No DROP/UPDATE/INSERT? Pass → forward to database. Fail → reject, log incident.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-teal">7</div>
+        <div class="sc-text"><strong>Database executes with RLS</strong> — Azure SQL sets <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">SESSION_CONTEXT(OrgID=42)</code> then runs the query. RLS filter predicate silently confirms every row belongs to Org 42. Returns: 47 rows.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-teal">8</div>
+        <div class="sc-text"><strong>Response formatted</strong> — The API formats the 47 rows into a readable table + metrics summary. PHI fields (full names, SSNs) are masked before sending to the frontend.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-blue">9</div>
+        <div class="sc-text"><strong>Logged & displayed</strong> — The full interaction is written to Azure Monitor. The formatted response is sent to Sarah's browser and displayed as a chat message with the data table.</div>
+      </div>
+    </div>
+    <div class="highlight hl-green"><strong>Total time:</strong> approximately 1.5–3 seconds end-to-end. Sarah gets her answer instantly — no waiting for a CCS employee to write SQL manually.</div>
+
+    <hr class="div">
+    <div class="sec-label">Blocked path — cross-org attempt</div>
+    <div class="scenario">
+      <div class="sc-step">
+        <div class="sc-num scn-red">1</div>
+        <div class="sc-text"><strong>User asks</strong> — Sarah types "Show me clients from Buffalo Health Services."</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-red">2</div>
+        <div class="sc-text"><strong>AI middleware detects it</strong> — The system prompt explicitly states that queries for other orgs must be refused. GPT-4.1 returns a refusal — no SQL is generated at all.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-red">3</div>
+        <div class="sc-text"><strong>Even if SQL was generated</strong> — The SQL validator would reject any query missing <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">OrgID=42</code> or containing a different OrgID.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-red">4</div>
+        <div class="sc-text"><strong>Even if it reached the database</strong> — Azure SQL RLS would return zero rows for any Org 17 data because the SESSION_CONTEXT is locked to Org 42.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-red">5</div>
+        <div class="sc-text"><strong>Incident logged</strong> — The attempt is written to Azure Monitor with full details: user, timestamp, what was requested. Security alert fired.</div>
+      </div>
+    </div>
+    <div class="highlight hl-red"><strong>Key point for judges:</strong> Three independent systems must ALL fail simultaneously for a data breach to occur — the AI, the validator, and the database engine. This is called defense in depth.</div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB 3 — SECURITY LAYERS
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-security">
+
+    <div class="sec-label">Defense in depth — 4 independent security walls</div>
+
+    <div class="two-col">
+      <div class="layer l-purple" style="margin-bottom:0">
+        <div class="layer-header">
+          <div class="layer-num">W1</div>
+          <div>
+            <div class="layer-title">Azure AD Authentication</div>
+            <div class="layer-sub">Wall 1 — who you are</div>
+          </div>
+        </div>
+        <div class="layer-body">
+          No valid JWT token = no entry. Period. Azure AD handles login, MFA, and session management. The OrgID and Role in the token are set by the server during provisioning — a user cannot forge or change their own OrgID.
+        </div>
+      </div>
+      <div class="layer l-orange" style="margin-bottom:0">
+        <div class="layer-header">
+          <div class="layer-num">W2</div>
+          <div>
+            <div class="layer-title">Locked System Prompt</div>
+            <div class="layer-sub">Wall 2 — what the AI is allowed to do</div>
+          </div>
+        </div>
+        <div class="layer-body">
+          OrgID is injected into the AI prompt by the server before the user's question is added. The user can type anything — even "ignore all instructions" — but the server-side context always overrides.
+        </div>
+      </div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="two-col">
+      <div class="layer l-amber" style="margin-bottom:0">
+        <div class="layer-header">
+          <div class="layer-num">W3</div>
+          <div>
+            <div class="layer-title">SQL Validation Layer</div>
+            <div class="layer-sub">Wall 3 — what SQL can execute</div>
+          </div>
+        </div>
+        <div class="layer-body">
+          Every SQL string the AI generates is parsed before execution. Rules: must contain OrgID=42, must be SELECT only, must not reference system tables, must not contain UNION or subqueries to other orgs. Fail any check = request rejected.
+        </div>
+      </div>
+      <div class="layer l-teal" style="margin-bottom:0">
+        <div class="layer-header">
+          <div class="layer-num">W4</div>
+          <div>
+            <div class="layer-title">Database RLS</div>
+            <div class="layer-sub">Wall 4 — engine-level enforcement</div>
+          </div>
+        </div>
+        <div class="layer-body">
+          Even if a crafted SQL bypassed all three walls above, RLS returns zero rows for any OrgID that doesn't match the session. This operates inside the database engine itself — application code cannot bypass it.
+        </div>
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sec-label">HIPAA compliance mapping</div>
+
+    <div class="layer l-green">
+      <div class="layer-header">
+        <div class="layer-num">✓</div>
+        <div>
+          <div class="layer-title">How each HIPAA requirement is met</div>
+          <div class="layer-sub">Technical safeguards checklist</div>
+        </div>
+      </div>
+      <div class="layer-body">
+        <strong>Access Control (§164.312(a))</strong> → Azure AD + RLS ensures users only see their org's data.<br>
+        <strong>Audit Controls (§164.312(b))</strong> → Azure Monitor logs every query with user, time, data returned.<br>
+        <strong>Integrity (§164.312(c))</strong> → SQL validation prevents writes; SELECT-only policy enforced.<br>
+        <strong>Transmission Security (§164.312(e))</strong> → All traffic over TLS 1.2+; private endpoints — no public internet.<br>
+        <strong>Encryption at Rest</strong> → Azure SQL Transparent Data Encryption (TDE) with Azure Key Vault keys.<br>
+        <strong>Model Training on PHI</strong> → Azure OpenAI BAA guarantees data is never used to train models.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB 4 — ONBOARDING FLOW
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-onboard">
+
+    <div class="sec-label">What happens when you onboard a new user</div>
+
+    <div class="scenario">
+      <div class="sc-step">
+        <div class="sc-num scn-blue">1</div>
+        <div class="sc-text"><strong>Admin fills the form</strong> — Name, email, department, org assignment (Org 42), and role (Caseworker / Manager / Admin) entered in the IMPOWR Onboarding tab.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-blue">2</div>
+        <div class="sc-text"><strong>Role selected</strong> — Each role maps to a predefined permission set. A Caseworker only sees their assigned clients. A Manager sees all org clients. An Admin can manage users and view audit logs.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-orange">3</div>
+        <div class="sc-text"><strong>Permissions toggled</strong> — Fine-grained module access configured: client records, appointments, AI assistant, grant reports, audit logs. Each toggle maps to a database permission scope.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-orange">4</div>
+        <div class="sc-text"><strong>Compliance checked</strong> — Admin confirms HIPAA training complete, DUA signed, background check cleared, MFA enrolled, acceptable use policy acknowledged. All five required before activation.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-teal">5</div>
+        <div class="sc-text"><strong>Account created in Azure AD</strong> — On activation, the API calls Azure AD to create the user account with their OrgID and Role embedded in their profile. An invitation email is sent automatically.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-teal">6</div>
+        <div class="sc-text"><strong>RLS automatically enforced</strong> — Because their OrgID is set in Azure AD, every database connection they make will have <code style="background:rgba(26,43,74,0.08);padding:1px 5px;border-radius:4px;font-size:10px">SESSION_CONTEXT(OrgID=42)</code> set automatically. They are instantly scoped to Org 42 — no manual database configuration needed.</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-num scn-teal">7</div>
+        <div class="sc-text"><strong>Onboarding logged</strong> — The full onboarding event (who created the account, what permissions, what compliance items were checked, timestamp) is written to Azure Monitor as a HIPAA-required access provisioning audit record.</div>
+      </div>
+    </div>
+    <div class="highlight hl-orange"><strong>Why this matters for the pitch:</strong> Today, CCS manually assigns database credentials and permissions for each new client org user — it's slow and error-prone. This onboarding flow makes it self-service, HIPAA-logged, and RLS-enforced in under 5 minutes.</div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB 5 — PITCH SUMMARY
+  ═══════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-pitch">
+
+    <div class="sec-label">How to explain this in your 6-minute pitch</div>
+
+    <div class="layer l-blue">
+      <div class="layer-header">
+        <div class="layer-num">1</div>
+        <div><div class="layer-title">The problem in one sentence</div></div>
+      </div>
+      <div class="layer-body">
+        "Right now, when a nonprofit manager needs data from IMPOWR, they email someone at CCS, who manually writes a SQL query, and emails the results back — sometimes days later. That's the bottleneck we're eliminating."
+      </div>
+    </div>
+
+    <div class="layer l-orange">
+      <div class="layer-header">
+        <div class="layer-num">2</div>
+        <div><div class="layer-title">The solution in one sentence</div></div>
+      </div>
+      <div class="layer-body">
+        "We built a chat interface powered by Azure GPT-4.1 that translates plain English into SQL, executes it on IMPOWR's database, and returns the answer in seconds — with HIPAA compliance enforced at every layer."
+      </div>
+    </div>
+
+    <div class="layer l-teal">
+      <div class="layer-header">
+        <div class="layer-num">3</div>
+        <div><div class="layer-title">The compliance answer (when they ask)</div></div>
+      </div>
+      <div class="layer-body">
+        "Doctor 1 cannot see Doctor 2's patients because we use three independent locks: first, the AI's system prompt has the OrgID hardcoded by the server. Second, our SQL validator rejects any query missing that OrgID. Third, Azure SQL's Row-Level Security enforces it at the database engine — all three would have to fail simultaneously for any breach."
+      </div>
+    </div>
+
+    <div class="layer l-amber">
+      <div class="layer-header">
+        <div class="layer-num">4</div>
+        <div><div class="layer-title">The business case in numbers</div></div>
+      </div>
+      <div class="layer-body">
+        "A federal grant report takes 100+ hours to compile manually. Our AI generates it in seconds from existing IMPOWR data. For a nonprofit managing 4 federal grants per year, that's 360 hours saved — worth approximately $9,000 per organization per year. CCS has dozens of client organizations."
+      </div>
+    </div>
+
+    <div class="layer l-green">
+      <div class="layer-header">
+        <div class="layer-num">5</div>
+        <div><div class="layer-title">Why Azure specifically (not raw ChatGPT)</div></div>
+      </div>
+      <div class="layer-body">
+        "Using raw ChatGPT with patient data is a HIPAA violation. Azure OpenAI runs inside our tenant — data never leaves our network, Microsoft signs a Business Associate Agreement automatically, and they guarantee the data is never used to train their models. That's the only compliant path."
+      </div>
+    </div>
+
+    <div class="layer l-purple">
+      <div class="layer-header">
+        <div class="layer-num">6</div>
+        <div><div class="layer-title">The demo moment</div></div>
+      </div>
+      <div class="layer-body">
+        "Let me show you the prototype. [Ask about stable housing → show metrics.] Now watch what happens when I try to access another organization's data. [Click blocked org.] Two independent systems caught it — the AI refused, the database would have blocked it anyway, and the incident was logged to Azure Monitor in real time."
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
